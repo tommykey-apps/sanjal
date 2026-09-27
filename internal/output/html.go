@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/tommykey-apps/hynt"
+	"github.com/tommykey-apps/hynt/neigh"
 	"github.com/tommykey-apps/sanjal/internal/diagram"
 )
 
@@ -62,7 +63,7 @@ func HTML(w io.Writer, r hynt.Report, now time.Time) error {
 		Generated:   now.Format("2006-01-02 15:04"),
 		Links:       len(r.Links),
 		Routes:      len(r.Routes),
-		Neighs:      len(r.Neighs),
+		Neighs:      countDevices(r.Neighs),
 		IPsecDenied: r.IPsecDenied,
 		// host の 1 行と graph LR だけなら、描くものが無い
 		Empty:     strings.Count(src, "\n") <= 2,
@@ -77,6 +78,15 @@ func HTML(w io.Writer, r hynt.Report, now time.Time) error {
 	}
 	_, err = buf.WriteTo(w)
 	return err
+}
+
+// 同じ機器は IPv4 と IPv6 で別の行として来るので、行数ではなく MAC で数える
+func countDevices(ns []neigh.Neigh) int {
+	n := 0
+	for _, c := range neigh.CountByDev(ns) {
+		n += c
+	}
+	return n
 }
 
 // tokens.css (トークン) + dark.css (暗色の上書き) + 書体 + page.css (この画面) の順に連結する

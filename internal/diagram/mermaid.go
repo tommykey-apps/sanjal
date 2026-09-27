@@ -52,7 +52,7 @@ func Mermaid(r hynt.Report) string {
 		}
 	}
 
-	// 隣人はインタフェースの先に破線で置く。角丸の四角 (Mermaid の (...))。
+	// 同じ LAN の機器 (ip neigh) はインタフェースの先に破線で置く。角丸の四角 (Mermaid の (...))。
 	// 同じ機器は IPv4 と IPv6 で別の行として来るので、MAC ごとに 1 つのノードにまとめる
 	for _, g := range groupNeighs(r.Neighs) {
 		if !drawn[g.dev] {
