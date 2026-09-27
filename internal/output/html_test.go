@@ -7,6 +7,7 @@ import (
 
 	"github.com/tommykey-apps/hynt"
 	"github.com/tommykey-apps/hynt/link"
+	"github.com/tommykey-apps/hynt/neigh"
 )
 
 var now = time.Date(2026, 9, 26, 12, 34, 0, 0, time.UTC)
@@ -29,6 +30,11 @@ func TestHTML(t *testing.T) {
 		Host:        `arch<x>`,
 		Links:       []link.Link{{Name: "wlp2s0", Kind: link.Wifi, State: "UP", Addrs: []string{"192.0.2.132/24"}}},
 		IPsecDenied: true,
+		Neighs: []neigh.Neigh{ // IPv4 と IPv6 の 2 行は同じ機器なので、機器は 2 台
+			{Dst: "192.0.2.1", Lladdr: "02:00:00:00:00:01", Dev: "wlp2s0"},
+			{Dst: "192.0.2.20", Lladdr: "11:22:33:44:55:66", Dev: "wlp2s0"},
+			{Dst: "2001:db8:1::1", Lladdr: "02:00:00:00:00:01", Dev: "wlp2s0"},
+		},
 	}
 	var b strings.Builder
 	if err := HTML(&b, r, now); err != nil {
@@ -38,6 +44,7 @@ func TestHTML(t *testing.T) {
 	for _, want := range []string{
 		"<title>arch&lt;x&gt; のネットワーク</title>", // ホスト名はエスケープされる
 		"取得 2026-09-26 12:34",
+		"同じ LAN の機器 2</p>",
 		"sudo sanjal --html",
 		"図を描画中",
 		"font/woff2;base64,",
