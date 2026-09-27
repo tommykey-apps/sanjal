@@ -7,15 +7,16 @@ import (
 	"os"
 
 	"github.com/tommykey-apps/hynt"
-	"github.com/tommykey-apps/sanjal/internal/diagram"
+	"github.com/tommykey-apps/sanjal/internal/output"
 )
 
 func main() {
 	r, err := hynt.Collect(context.Background())
+	if err == nil {
+		err = output.Markdown(os.Stdout, r)
+	}
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "sanjal:", err)
 		os.Exit(1)
 	}
-	// Markdown のコードブロックで囲むと、GitHub や VS Code がそのまま図にする
-	fmt.Print("```mermaid\n" + diagram.Mermaid(r) + "```\n")
 }
