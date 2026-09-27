@@ -51,6 +51,7 @@ body {
 .legend li { display: inline-flex; align-items: center; gap: calc(6 / 16 * 1rem); }
 .legend svg { width: calc(40 / 16 * 1rem); height: calc(20 / 16 * 1rem); flex: none; overflow: visible; }
 .legend__node { fill: var(--color-key-50); stroke: var(--color-key-900); stroke-width: 1.5; }
+.legend__zone { fill: var(--color-neutral-solid-gray-50); stroke: var(--color-neutral-solid-gray-420); stroke-width: 1; }
 .legend__edge { fill: none; stroke: var(--color-neutral-solid-gray-600); stroke-width: 1.5; }
 .legend__arrow { fill: var(--color-neutral-solid-gray-600); }
 .legend__label { fill: var(--color-neutral-solid-gray-900); font-family: var(--font-family-mono); font-size: 8px; }

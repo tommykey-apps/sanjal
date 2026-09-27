@@ -38,6 +38,9 @@
           textColor: cssVar("--color-neutral-solid-gray-900"),
           background: cssVar("--color-neutral-white"),
           edgeLabelBackground: cssVar("--color-neutral-white"),
+          clusterBkg: cssVar("--color-neutral-solid-gray-50"),
+          clusterBorder: cssVar("--color-neutral-solid-gray-420"),
+          titleColor: cssVar("--color-neutral-solid-gray-900"),
         },
       });
       var out = await window.mermaid.render(id, source);

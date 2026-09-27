@@ -9,11 +9,11 @@ import (
 
 func TestMarkdownIPsecDenied(t *testing.T) {
 	var b strings.Builder
-	if err := Markdown(&b, hynt.Report{Host: "arch", IPsecDenied: true}); err != nil {
+	if err := Markdown(&b, hynt.Report{Host: "box", IPsecDenied: true}); err != nil {
 		t.Fatal(err)
 	}
 	s := b.String()
-	for _, want := range []string{"# arch のネットワーク", "```mermaid\ngraph LR\n", "## 凡例", "`sudo sanjal`"} {
+	for _, want := range []string{"# box のネットワーク", "```mermaid\ngraph LR\n", "## 凡例", "`sudo sanjal`"} {
 		if !strings.Contains(s, want) {
 			t.Errorf("%q が無い:\n%s", want, s)
 		}
@@ -22,7 +22,7 @@ func TestMarkdownIPsecDenied(t *testing.T) {
 
 func TestMarkdownIPsecRead(t *testing.T) {
 	var b strings.Builder
-	if err := Markdown(&b, hynt.Report{Host: "arch"}); err != nil {
+	if err := Markdown(&b, hynt.Report{Host: "box"}); err != nil {
 		t.Fatal(err)
 	}
 	if strings.Contains(b.String(), "root 権限") {
