@@ -1,2 +1,12 @@
 github.com/tommykey-apps/hynt v0.2.0 h1:E823hob2zvlHNsExIIyUOCfA37U6PjYFtQ9A3lEPZUo=
 github.com/tommykey-apps/hynt v0.2.0/go.mod h1:2jv2MtTEB/ha9an7zKX3dLzc/86WOzU6lZ0uu4Q8kPk=
+github.com/tommykey-apps/hynt v0.2.2-0.20260927220810-e4311d90531b h1:SJvx9eKCP5dtesQh4YaUnZN2dJy0bx8Ric4BvIRlQFM=
+github.com/tommykey-apps/hynt v0.2.2-0.20260927220810-e4311d90531b/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
+github.com/tommykey-apps/hynt v0.3.0 h1:2v439IaAmdJzm73heLMzIdaEQJ3F6y3FwyvVgFikbnA=
+github.com/tommykey-apps/hynt v0.3.0/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
+github.com/tommykey-apps/hynt v0.3.1-0.20260927230635-788100eed70e h1:YYJhQKZLnDcVtsxtG7m5hdUdSkxD2SYI3zvj6EgyCnw=
+github.com/tommykey-apps/hynt v0.3.1-0.20260927230635-788100eed70e/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
+github.com/tommykey-apps/hynt v0.4.0 h1:d9RlFF+907dLNmFawZaOqdxVmFSK0rEJT+q7bFtikMg=
+github.com/tommykey-apps/hynt v0.4.0/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
+github.com/tommykey-apps/hynt v0.4.1 h1:8aOa+qRZlPRLV3NBcpwRt9Q35HV9A2G952+o26bxbSw=
+github.com/tommykey-apps/hynt v0.4.1/go.mod h1:RE5jOUBJr5CE7J3ZDSz5NOOQZsCA41+qOh185eZtQvI=

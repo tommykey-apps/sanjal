@@ -27,13 +27,13 @@ func TestMermaidJSEmbeddable(t *testing.T) {
 
 func TestHTML(t *testing.T) {
 	r := hynt.Report{
-		Host:        `arch<x>`,
-		Links:       []link.Link{{Name: "wlp2s0", Kind: link.Wifi, State: "UP", Addrs: []string{"192.0.2.132/24"}}},
+		Host:        `box<x>`,
+		Links:       []link.Link{{Name: "wlan0", Kind: link.Wifi, State: "UP", Addrs: []string{"192.0.2.10/24"}}},
 		IPsecDenied: true,
 		Neighs: []neigh.Neigh{ // IPv4 と IPv6 の 2 行は同じ機器なので、機器は 2 台
-			{Dst: "192.0.2.1", Lladdr: "02:00:00:00:00:01", Dev: "wlp2s0"},
-			{Dst: "192.0.2.20", Lladdr: "11:22:33:44:55:66", Dev: "wlp2s0"},
-			{Dst: "2001:db8:1::1", Lladdr: "02:00:00:00:00:01", Dev: "wlp2s0"},
+			{Dst: "192.0.2.1", Lladdr: "00:00:5e:00:53:01", Dev: "wlan0"},
+			{Dst: "192.0.2.20", Lladdr: "00:00:5e:00:53:03", Dev: "wlan0"},
+			{Dst: "2001:db8:1::1", Lladdr: "00:00:5e:00:53:01", Dev: "wlan0"},
 		},
 	}
 	var b strings.Builder
@@ -42,7 +42,7 @@ func TestHTML(t *testing.T) {
 	}
 	s := b.String()
 	for _, want := range []string{
-		"<title>arch&lt;x&gt; のネットワーク</title>", // ホスト名はエスケープされる
+		"<title>box&lt;x&gt; のネットワーク</title>", // ホスト名はエスケープされる
 		"取得 2026-09-26 12:34",
 		"同じ LAN の機器 2</p>",
 		"sudo sanjal --html",
@@ -61,7 +61,7 @@ func TestHTML(t *testing.T) {
 
 func TestHTMLEmpty(t *testing.T) {
 	var b strings.Builder
-	if err := HTML(&b, hynt.Report{Host: "arch"}, now); err != nil {
+	if err := HTML(&b, hynt.Report{Host: "box"}, now); err != nil {
 		t.Fatal(err)
 	}
 	s := b.String()

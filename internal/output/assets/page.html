@@ -11,18 +11,26 @@
 <main class="page">
   <h1 class="page__title">{{.Host}} のネットワーク</h1>
   <p class="page__meta">取得 {{.Generated}} ・ インタフェース {{.Links}} ・ 経路 {{.Routes}} ・ 同じ LAN の機器 {{.Neighs}}</p>
-  {{- if .IPsecDenied}}
-  <p class="notice" role="status">IPsec は root 権限が無いため読めていない。<code>sudo sanjal --html</code> で再実行すると描かれる。</p>
+  {{- if or .Denied .FirewallMissing}}
+  <p class="notice" role="status">
+    {{- if .Denied}}{{.Denied}} root 権限が無いため読めていない。<code>sudo sanjal --html</code> で再実行すると描かれる。{{end}}
+    {{- if .FirewallMissing}}nft が無いため、ファイアウォールを読めていない。{{end}}
+    {{- if .FirewallUnread}}入口のポートがファイアウォールで塞がれているかは分からない。{{end}}
+  </p>
   {{- end}}
   <ul class="legend" aria-label="凡例">
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><polygon class="legend__node" points="9,3 31,3 38,10 31,17 9,17 2,10"/></svg>このホスト</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__zone" x="2" y="2" width="36" height="16"/></svg>区分 (マシンの中 / LAN / VPN)</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><circle class="legend__node" cx="20" cy="10" r="8"/></svg>インターネット</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14"/></svg>インタフェース</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14" rx="7"/></svg>経路の宛先</li>
-    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14" rx="3"/></svg>同じ LAN の機器 (IP と MAC)</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14" rx="3"/></svg>同じ LAN の機器 (IP と MAC)。ゲートウェイを含む</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 10h36"/></svg>物理インタフェース</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 13h28"/><path class="legend__arrow" d="M30 8l8 5-8 5z"/><text class="legend__label" x="4" y="8">tun</text></svg>VPN と実装名</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 13h28"/><path class="legend__arrow" d="M30 8l8 5-8 5z"/><text class="legend__label" x="4" y="8">table</text></svg>main 以外のテーブル</li>
     <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" stroke-dasharray="3 3" d="M2 10h36"/></svg>同じ LAN の機器</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><polygon class="legend__node" points="8,3 38,3 32,17 2,17"/></svg>入口 (外から入ってこられるポート)</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" stroke-dasharray="3 3" d="M38 13H10"/><path class="legend__arrow" d="M10 8l-8 5 8 5z"/><text class="legend__label" x="14" y="8">受信</text></svg>入ってくる向き</li>
   </ul>
   <div class="graph" id="graph" aria-live="polite">
     {{- if .Empty}}
