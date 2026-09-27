@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>{{.Host}} のネットワーク</title>
+<style>{{.CSS}}</style>
+</head>
+<body>
+<main class="page">
+  <h1 class="page__title">{{.Host}} のネットワーク</h1>
+  <p class="page__meta">取得 {{.Generated}} ・ インタフェース {{.Links}} ・ 経路 {{.Routes}} ・ 隣人 {{.Neighs}}</p>
+  {{- if .IPsecDenied}}
+  <p class="notice" role="status">IPsec は root 権限が無いため読めていない。<code>sudo sanjal --html</code> で再実行すると描かれる。</p>
+  {{- end}}
+  <ul class="legend" aria-label="凡例">
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><polygon class="legend__node" points="9,3 31,3 38,10 31,17 9,17 2,10"/></svg>このホスト</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14"/></svg>インタフェース</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14" rx="7"/></svg>経路の宛先</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><rect class="legend__node" x="2" y="3" width="36" height="14" rx="3"/></svg>隣人 (IP と MAC)</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 10h36"/></svg>物理インタフェース</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 13h28"/><path class="legend__arrow" d="M30 8l8 5-8 5z"/><text class="legend__label" x="4" y="8">tun</text></svg>VPN と実装名</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" d="M2 13h28"/><path class="legend__arrow" d="M30 8l8 5-8 5z"/><text class="legend__label" x="4" y="8">table</text></svg>main 以外のテーブル</li>
+    <li><svg viewBox="0 0 40 20" aria-hidden="true"><path class="legend__edge" stroke-dasharray="3 3" d="M2 10h36"/></svg>隣人</li>
+  </ul>
+  <div class="graph" id="graph" aria-live="polite">
+    {{- if .Empty}}
+    <p class="state">描けるインタフェースが無い。<code>ip -br addr</code> で状態を確かめる。</p>
+    {{- else}}
+    <p class="state">図を描画中</p>
+    {{- end}}
+  </div>
+  <details class="source">
+    <summary>Mermaid の記述</summary>
+    <pre id="source">{{.Source}}</pre>
+  </details>
+</main>
+{{- if not .Empty}}
+<script>{{.MermaidJS}}</script>
+<script>{{.PageJS}}</script>
+{{- end}}
+</body>
+</html>
