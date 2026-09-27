@@ -12,9 +12,17 @@ import (
 	"github.com/tommykey-apps/sanjal/internal/output"
 )
 
+// GoReleaser が -X main.version=v1.2.3 で埋める。go run のときは dev
+var version = "dev"
+
 func main() {
 	asHTML := flag.Bool("html", false, "mermaid.js を埋め込んだ 1 枚の HTML で出す")
+	showVersion := flag.Bool("version", false, "版を出す")
 	flag.Parse()
+	if *showVersion {
+		fmt.Println("sanjal", version)
+		return
+	}
 
 	r, err := hynt.Collect(context.Background())
 	if err == nil {
