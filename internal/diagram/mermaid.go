@@ -8,6 +8,7 @@ import (
 
 	"github.com/tommykey-apps/hynt"
 	"github.com/tommykey-apps/hynt/link"
+	"github.com/tommykey-apps/hynt/neigh"
 	"github.com/tommykey-apps/hynt/route"
 )
 
@@ -51,7 +52,46 @@ func Mermaid(r hynt.Report) string {
 		}
 	}
 
+	// 隣人はインタフェースの先に破線で置く。角丸の四角 (Mermaid の (...))。
+	// 同じ機器は IPv4 と IPv6 で別の行として来るので、MAC ごとに 1 つのノードにまとめる
+	for _, g := range groupNeighs(r.Neighs) {
+		if !drawn[g.dev] {
+			continue
+		}
+		nid := nodeID("n", g.dev+"_"+g.mac)
+		fmt.Fprintf(&b, "  %s(%s)\n", nid, quote(strings.Join(append(g.ips, g.mac), "<br/>")))
+		fmt.Fprintf(&b, "  %s -.- %s\n", nodeID("l", g.dev), nid)
+	}
+
+	// policy-based IPsec はインタフェースを持たないので host から直接引く
+	for _, p := range r.Policies {
+		pid := nodeID("p", p.Dst)
+		fmt.Fprintf(&b, "  %s([%s])\n", pid, quote(p.Dst))
+		fmt.Fprintf(&b, "  host -->|%s| %s\n", quote("ipsec via "+p.Gateway), pid)
+	}
 	return b.String()
+}
+
+type neighGroup struct {
+	dev, mac string
+	ips      []string
+}
+
+// 最初に現れた順を保つ。hynt が dev と IP でソートして返すので、出力は決定的になる
+func groupNeighs(ns []neigh.Neigh) []neighGroup {
+	var groups []neighGroup
+	index := map[string]int{}
+	for _, n := range ns {
+		key := n.Dev + " " + n.Lladdr
+		i, ok := index[key]
+		if !ok {
+			i = len(groups)
+			index[key] = i
+			groups = append(groups, neighGroup{dev: n.Dev, mac: n.Lladdr})
+		}
+		groups[i].ips = append(groups[i].ips, n.Dst)
+	}
+	return groups
 }
 
 // veth のようにアドレスも経路も無い仮想インタフェースは描かない。図が veth だらけになる
