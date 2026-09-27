@@ -4,6 +4,7 @@ package output
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/tommykey-apps/hynt"
 	"github.com/tommykey-apps/sanjal/internal/diagram"
@@ -23,6 +24,9 @@ const legendMarkdown = `| 形 | 意味 |
 | 矢印の ` + "`table 52`" + ` など | main 以外のルーティングテーブルの経路 |
 | 矢印の ` + "`ipsec via`" + ` | インタフェースを持たない IPsec |
 | 破線 | 同じ LAN の機器 |
+| 平行四辺形 | 入口。外から入ってこられる (待ち受けている) ポート。「塞がれている」の下はファイアウォールが塞ぐ、「条件付き」の下は送信元などで一部だけ通す |
+| 破線の矢印の「受信」 | 入口から口へ入ってくる向き |
+| 「マシンの中からだけ」 | 127.0.0.1 などで待ち受け、外からは入れないポート |
 `
 
 func Markdown(w io.Writer, r hynt.Report) error {
@@ -30,8 +34,18 @@ func Markdown(w io.Writer, r hynt.Report) error {
 	if err != nil {
 		return err
 	}
-	if r.IPsecDenied {
-		_, err = fmt.Fprintln(w, "\nIPsec は root 権限が無いため読めていない。`sudo sanjal` で再実行すると描かれる。")
+	var notes []string
+	if d := deniedParts(r); d != "" {
+		notes = append(notes, d+" root 権限が無いため読めていない。`sudo sanjal` で再実行すると描かれる。")
+	}
+	if r.FirewallState == hynt.FirewallMissing {
+		notes = append(notes, "nft が無いため、ファイアウォールを読めていない。")
+	}
+	if firewallUnread(r) {
+		notes = append(notes, "入口のポートがファイアウォールで塞がれているかは分からない。")
+	}
+	if len(notes) > 0 {
+		_, err = fmt.Fprintf(w, "\n%s\n", strings.Join(notes, ""))
 	}
 	return err
 }

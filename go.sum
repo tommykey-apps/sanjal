@@ -4,3 +4,5 @@ github.com/tommykey-apps/hynt v0.2.2-0.20260927220810-e4311d90531b h1:SJvx9eKCP5
 github.com/tommykey-apps/hynt v0.2.2-0.20260927220810-e4311d90531b/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
 github.com/tommykey-apps/hynt v0.3.0 h1:2v439IaAmdJzm73heLMzIdaEQJ3F6y3FwyvVgFikbnA=
 github.com/tommykey-apps/hynt v0.3.0/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=
+github.com/tommykey-apps/hynt v0.3.1-0.20260927230635-788100eed70e h1:YYJhQKZLnDcVtsxtG7m5hdUdSkxD2SYI3zvj6EgyCnw=
+github.com/tommykey-apps/hynt v0.3.1-0.20260927230635-788100eed70e/go.mod h1:dgLyJs83fsPkmPgQ2h3DZFyBrhjsXR+mCR1ijr7ae2c=

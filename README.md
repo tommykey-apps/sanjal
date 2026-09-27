@@ -18,4 +18,4 @@ Go が入っていれば:
 
     go install github.com/tommykey-apps/sanjal/cmd/sanjal@latest
 
-iproute2 (`ip`) が要る。IPsec を描くときだけ root が要る。
+iproute2 (`ip` `ss`) が要る。IPsec とファイアウォール (nftables) を読むときだけ root が要る。

@@ -12,6 +12,7 @@ import (
 	"github.com/tommykey-apps/hynt/link"
 	"github.com/tommykey-apps/hynt/neigh"
 	"github.com/tommykey-apps/hynt/route"
+	"github.com/tommykey-apps/sanjal/internal/inbound"
 )
 
 // 区分
@@ -157,6 +158,26 @@ func Mermaid(r hynt.Report) string {
 		edge("%s -.- %s", nodeID("l", g.dev), g.id())
 	}
 
+	// 外から入ってこられるポートは口の右に「入口」として置き、口へ向かう破線の矢印で受信を表す。
+	// Why not: 入口 -.-> 口 だけを書かない。Mermaid は矢印の元を左に置くので、入口が host と口の間に来る。
+	// 見えない線 (~~~) で先に口の右へ置いてから矢印を引く
+	entries := inbound.Of(r)
+	for _, l := range r.Links {
+		es := entries[l.Name]
+		if !drawn[l.Name] || len(es) == 0 {
+			continue
+		}
+		iid, lid := nodeID("i", l.Name), nodeID("l", l.Name)
+		node(zoneOf[l.Name], "%s[/%s/]", iid, quote(entryLabel("入口", es)))
+		edge("%s ~~~ %s", lid, iid)
+		edge("%s -.->|%s| %s", iid, quote("受信"), lid)
+	}
+	if es := entries[inbound.Local]; len(es) > 0 {
+		node(zoneInner, "i_local[/%s/]", quote(entryLabel("マシンの中からだけ", es)))
+		edge("host ~~~ i_local")
+		edge("i_local -.->|%s| host", quote("受信"))
+	}
+
 	// policy-based IPsec はインタフェースを持たないので host から直接引く
 	for _, p := range r.Policies {
 		pid := nodeID("p", p.Dst)
@@ -187,6 +208,37 @@ func Mermaid(r hynt.Report) string {
 		fmt.Fprintf(&b, "  %s\n", e)
 	}
 	return b.String()
+}
+
+// entryLabel は「22/tcp sshd」を 1 行ずつ並べる。ファイアウォールで塞がれたものと条件付きのものは見出しを分ける。
+// Why not: 行末に「(塞がれている)」と付けない。Mermaid が枠の幅で折り返し、1 行が 2 行に割れて読めなくなった
+func entryLabel(title string, es []inbound.Entry) string {
+	groups := []struct {
+		v       inbound.Verdict
+		heading string
+	}{
+		{inbound.Unchecked, ""}, {inbound.Allowed, ""},
+		{inbound.Partial, "条件付き"}, {inbound.Blocked, "塞がれている"},
+	}
+	lines := []string{title}
+	for _, g := range groups {
+		first := true
+		for _, e := range es {
+			if e.Verdict != g.v {
+				continue
+			}
+			if first && g.heading != "" {
+				lines = append(lines, "", g.heading)
+			}
+			first = false
+			s := fmt.Sprintf("%d/%s", e.Port, e.Proto)
+			if e.Process != "" {
+				s += " " + e.Process
+			}
+			lines = append(lines, s)
+		}
+	}
+	return strings.Join(lines, "<br/>")
 }
 
 // classify は口を区分に分ける。名前では決めず、hynt の種別と所属と経路で決める

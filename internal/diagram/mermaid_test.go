@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/tommykey-apps/hynt"
+	"github.com/tommykey-apps/hynt/firewall"
 	"github.com/tommykey-apps/hynt/link"
+	"github.com/tommykey-apps/hynt/listen"
 	"github.com/tommykey-apps/hynt/neigh"
 	"github.com/tommykey-apps/hynt/route"
 	"github.com/tommykey-apps/hynt/xfrm"
@@ -227,5 +229,33 @@ func TestEUI64MAC(t *testing.T) {
 func TestQuote(t *testing.T) {
 	if got := quote(`a"b`); got != `"a#quot;b"` {
 		t.Errorf("got %s", got)
+	}
+}
+
+// 入口は口の右に置き (~~~)、口へ向かう破線の矢印を引く。マシンの中だけのポートは host へ
+func TestMermaidInbound(t *testing.T) {
+	r := hynt.Report{
+		Host:  "box",
+		Links: []link.Link{{Name: "eth0", Kind: link.Ethernet, State: "UP", Addrs: []string{"192.0.2.10/24"}}},
+		Listens: []listen.Socket{
+			{Proto: "tcp", Addr: "0.0.0.0", Port: 22, Process: "sshd"},
+			{Proto: "tcp", Addr: "0.0.0.0", Port: 80},
+			{Proto: "tcp", Addr: "127.0.0.1", Port: 631},
+		},
+		Firewall: []firewall.Chain{{Family: "inet", Table: "t", Name: "in", Hook: "input", Policy: "drop", Rules: []firewall.Rule{
+			{Protos: []string{"tcp"}, Dports: []firewall.PortRange{{From: 22, To: 22}}, Verdict: "accept"},
+		}}},
+		FirewallState: hynt.FirewallRead,
+	}
+	got := Mermaid(r)
+	for _, want := range []string{
+		`    i_eth0[/"入口<br/>22/tcp sshd<br/><br/>塞がれている<br/>80/tcp"/]`,
+		`    i_local[/"マシンの中からだけ<br/>631/tcp"/]`,
+		"  l_eth0 ~~~ i_eth0\n  i_eth0 -.->|\"受信\"| l_eth0\n",
+		"  host ~~~ i_local\n  i_local -.->|\"受信\"| host\n",
+	} {
+		if !strings.Contains(got, want) {
+			t.Errorf("%q が無い:\n%s", want, got)
+		}
 	}
 }

@@ -38,7 +38,9 @@ type pageData struct {
 	Host                  string
 	Generated             string
 	Links, Routes, Neighs int
-	IPsecDenied, Empty    bool
+	Denied                string // root 権限が無くて読めなかったもの。「IPsec とファイアウォールは」など
+	FirewallMissing       bool
+	FirewallUnread, Empty bool
 	Source                string
 	CSS                   template.CSS
 	MermaidJS, PageJS     template.JS
@@ -59,12 +61,14 @@ func HTML(w io.Writer, r hynt.Report, now time.Time) error {
 	}
 	src := diagram.Mermaid(r)
 	d := pageData{
-		Host:        r.Host,
-		Generated:   now.Format("2006-01-02 15:04"),
-		Links:       len(r.Links),
-		Routes:      len(r.Routes),
-		Neighs:      countDevices(r.Neighs),
-		IPsecDenied: r.IPsecDenied,
+		Host:            r.Host,
+		Generated:       now.Format("2006-01-02 15:04"),
+		Links:           len(r.Links),
+		Routes:          len(r.Routes),
+		Neighs:          countDevices(r.Neighs),
+		Denied:          deniedParts(r),
+		FirewallMissing: r.FirewallState == hynt.FirewallMissing,
+		FirewallUnread:  firewallUnread(r),
 		// host の 1 行と graph LR だけなら、描くものが無い
 		Empty:     strings.Count(src, "\n") <= 2,
 		Source:    src,
