@@ -34,10 +34,10 @@ sanjal --html            # mermaid.js を埋め込んだ 1 枚の HTML を標準
 ## 図のルール
 
 - host から右へ広がる図 (`graph LR`)。host → インタフェース → 宛先 (経路) / 同じ LAN の機器 → インターネット
-- インタフェースを 3 つの枠 (subgraph) に分ける。上から LAN、VPN、機械の中 (外へ出ない)。名前では決めない
+- インタフェースを 3 つの枠 (subgraph) に分ける。上から LAN、VPN、マシンの中 (外へ出ない)。名前では決めない
   - VPN: hynt の種別が vpn
   - LAN: 種別が ethernet / wifi。または所属する口 (`Link.Master`) に ethernet / wifi を持つ (br0 や bond)。または、ゲートウェイ付きの既定経路を持つ (vlan など)
-  - 機械の中: それ以外 (docker0 などのブリッジ)
+  - マシンの中: それ以外 (docker0 などのブリッジ)
 - host は枠に入れない。入れると線が枠をまたいで交差し、読めなくなった
 - インターネットは丸 1 つ。普通の通信 (fwmark なし) が使う既定経路だけをそこへ繋ぐ
   - `ip rule` を優先度の順にたどり、既定経路を持つ最初のテーブルで決める。当てはまる規則は `from all` と `not from all fwmark ...`。fwmark 付きの規則と unreachable などは飛ばす

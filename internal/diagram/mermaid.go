@@ -18,20 +18,20 @@ import (
 type zone int
 
 const (
-	zoneInner zone = iota // 機械の中 (docker のブリッジなど)
+	zoneInner zone = iota // マシンの中 (docker のブリッジなど)
 	zoneLAN               // 家や職場の LAN
 	zoneVPN
 )
 
 var zoneTitles = []struct{ id, title string }{
-	{"z_inner", "機械の中 (外へ出ない)"},
+	{"z_inner", "マシンの中 (外へ出ない)"},
 	{"z_lan", "LAN"},
 	{"z_vpn", "VPN"},
 }
 
 const internetID = "inet"
 
-// Mermaid は host から「機械の中 / LAN / VPN」の枠を経てインターネットへ至る図を返す。
+// Mermaid は host から「マシンの中 / LAN / VPN」の枠を経てインターネットへ至る図を返す。
 // Report が同じなら出力も同じ (hynt が名前でソートして返すので、ここでは並べ替えない)
 func Mermaid(r hynt.Report) string {
 	routesByDev := map[string][]route.Route{}
@@ -167,7 +167,7 @@ func Mermaid(r hynt.Report) string {
 	var b strings.Builder
 	b.WriteString("graph LR\n")
 	fmt.Fprintf(&b, "  host{{%s}}\n", quote(r.Host))
-	// Why not: host を機械の中の枠に入れない。線が枠をまたいで交差し、かえって読めなくなった。
+	// Why not: host をマシンの中の枠に入れない。線が枠をまたいで交差し、かえって読めなくなった。
 	// Mermaid (dagre) は後に宣言した枠ほど上に置くので、本線の LAN が一番上に来るよう逆順に書く
 	for _, z := range []zone{zoneInner, zoneVPN, zoneLAN} {
 		ns := nodes[z]

@@ -51,7 +51,7 @@ var sample = hynt.Report{
 func TestMermaid(t *testing.T) {
 	want := `graph LR
   host{{"box"}}
-  subgraph z_inner["機械の中 (外へ出ない)"]
+  subgraph z_inner["マシンの中 (外へ出ない)"]
     l_br0["br0<br/>bridge<br/>198.51.100.1/24"]
     r_br0_main_198_51_100_0_24(["198.51.100.0/24"])
     n_br0_00_00_5e_00_53_02("198.51.100.2<br/>00:00:5e:00:53:02")
