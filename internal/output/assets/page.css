@@ -1,0 +1,77 @@
+/* 色・書体・角丸はデジタル庁デザインシステムのトークンだけを使う。余白は ahab と同じく rem 換算 */
+html {
+  color-scheme: light;
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-16);
+  line-height: var(--line-height-150);
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+}
+body {
+  margin: 0;
+  background: var(--color-neutral-white);
+  color: var(--color-neutral-solid-gray-900);
+}
+.page {
+  max-width: calc(1280 / 16 * 1rem);
+  margin: 0 auto;
+  padding: calc(24 / 16 * 1rem) calc(16 / 16 * 1rem) calc(48 / 16 * 1rem);
+}
+.page__title {
+  margin: 0;
+  font-size: var(--font-size-28);
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-150);
+}
+.page__meta {
+  margin: calc(4 / 16 * 1rem) 0 0;
+  color: var(--color-neutral-solid-gray-600);
+  font-size: var(--font-size-14);
+}
+.notice {
+  margin: calc(16 / 16 * 1rem) 0 0;
+  padding: calc(12 / 16 * 1rem) calc(16 / 16 * 1rem);
+  border: 1px solid var(--color-semantic-warning-yellow-1);
+  border-left-width: calc(6 / 16 * 1rem);
+  border-radius: var(--border-radius-8);
+}
+.notice code, .state code { font-family: var(--font-family-mono); }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(4 / 16 * 1rem) calc(20 / 16 * 1rem);
+  margin: calc(24 / 16 * 1rem) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-neutral-solid-gray-600);
+  font-size: var(--font-size-14);
+}
+.legend li { display: inline-flex; align-items: center; gap: calc(6 / 16 * 1rem); }
+.legend svg { width: calc(40 / 16 * 1rem); height: calc(20 / 16 * 1rem); flex: none; overflow: visible; }
+.legend__node { fill: var(--color-key-50); stroke: var(--color-key-900); stroke-width: 1.5; }
+.legend__edge { fill: none; stroke: var(--color-neutral-solid-gray-600); stroke-width: 1.5; }
+.legend__arrow { fill: var(--color-neutral-solid-gray-600); }
+.legend__label { fill: var(--color-neutral-solid-gray-900); font-family: var(--font-family-mono); font-size: 8px; }
+.graph {
+  margin: calc(16 / 16 * 1rem) 0 0;
+  padding: calc(16 / 16 * 1rem) 0;
+  border-top: 1px solid var(--color-neutral-solid-gray-100);
+  overflow: auto;
+}
+.graph svg { height: auto; }
+.state { margin: 0; color: var(--color-neutral-solid-gray-600); }
+.state--error { color: var(--color-semantic-error-1); }
+.source { margin: calc(24 / 16 * 1rem) 0 0; font-size: var(--font-size-14); }
+.source summary { cursor: pointer; color: var(--color-neutral-solid-gray-600); }
+.source summary:focus-visible { outline: 2px solid var(--color-key-600); outline-offset: 2px; border-radius: var(--border-radius-4); }
+.source pre {
+  margin: calc(8 / 16 * 1rem) 0 0;
+  padding: calc(12 / 16 * 1rem);
+  overflow: auto;
+  background: var(--color-neutral-solid-gray-50);
+  border-radius: var(--border-radius-8);
+  font-family: var(--font-family-mono);
+  line-height: var(--line-height-150);
+}
